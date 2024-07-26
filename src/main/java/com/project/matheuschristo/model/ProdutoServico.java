@@ -20,7 +20,7 @@ public class ProdutoServico {
     @Column(name = "preco", nullable = false)
     private BigDecimal preco;
 
-    @Column(name = "desativado", nullable = false)
+    @Column(name = "desativado")
     private boolean desativado;
 
     @Column(name = "is_produto", nullable = false)
