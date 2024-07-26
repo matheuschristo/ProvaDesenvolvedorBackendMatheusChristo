@@ -1,19 +1,13 @@
 package com.project.matheuschristo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "pedido")
-@AllArgsConstructor
-@NoArgsConstructor
 public class Pedido {
 
     @Id
@@ -32,4 +26,47 @@ public class Pedido {
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<Item> itens;
+
+    public Pedido(UUID id, BigDecimal total, BigDecimal desconto, boolean isAberto) {
+        this.id = id;
+        this.total = total;
+        this.desconto = desconto;
+        this.isAberto = isAberto;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
+
+    public BigDecimal getDesconto() {
+        return desconto;
+    }
+
+    public void setDesconto(BigDecimal desconto) {
+        this.desconto = desconto;
+    }
+
+    public boolean isAberto() {
+        return isAberto;
+    }
+
+    public void setAberto(boolean aberto) {
+        isAberto = aberto;
+    }
+
+    public List<Item> getItens() {
+        return itens;
+    }
 }

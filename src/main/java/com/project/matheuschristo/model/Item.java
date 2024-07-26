@@ -1,16 +1,11 @@
 package com.project.matheuschristo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "item")
-@AllArgsConstructor @NoArgsConstructor
 public class Item {
 
     @Id
@@ -28,4 +23,11 @@ public class Item {
 
     @Column(name = "quantidade")
     private int quantidade;
+
+    public Item(UUID id, Pedido pedido, ProdutoServico produtoServico, int quantidade) {
+        this.id = id;
+        this.pedido = pedido;
+        this.produtoServico = produtoServico;
+        this.quantidade = quantidade;
+    }
 }

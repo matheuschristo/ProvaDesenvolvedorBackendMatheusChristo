@@ -1,18 +1,12 @@
 package com.project.matheuschristo.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "produto_servico")
-@AllArgsConstructor
-@NoArgsConstructor
 public class ProdutoServico {
 
     @Id
@@ -31,4 +25,52 @@ public class ProdutoServico {
 
     @Column(name = "is_produto", nullable = false)
     private boolean isProduto;
+
+    public ProdutoServico(UUID id, String nome, BigDecimal preco, boolean desativado, boolean isProduto) {
+        this.id = id;
+        this.nome = nome;
+        this.preco = preco;
+        this.desativado = desativado;
+        this.isProduto = isProduto;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public BigDecimal getPreco() {
+        return preco;
+    }
+
+    public void setPreco(BigDecimal preco) {
+        this.preco = preco;
+    }
+
+    public boolean isDesativado() {
+        return desativado;
+    }
+
+    public void setDesativado(boolean desativado) {
+        this.desativado = desativado;
+    }
+
+    public boolean isProduto() {
+        return isProduto;
+    }
+
+    public void setProduto(boolean produto) {
+        isProduto = produto;
+    }
 }
