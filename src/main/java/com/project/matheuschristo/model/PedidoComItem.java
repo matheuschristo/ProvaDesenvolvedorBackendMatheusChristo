@@ -7,23 +7,17 @@ import java.util.UUID;
 
 public class PedidoComItem {
 
-    private BigDecimal total;
-
     private BigDecimal desconto;
 
     private boolean isAberto;
 
     private List<UUID> itensId = new ArrayList<>();
 
-    public PedidoComItem(BigDecimal total, BigDecimal desconto, boolean isAberto) {
-        this.total = total;
+    public PedidoComItem(BigDecimal desconto, boolean isAberto) {
         this.desconto = desconto;
         this.isAberto = isAberto;
     }
 
-    public BigDecimal getTotal() {
-        return total;
-    }
     public BigDecimal getDesconto() {
         return desconto;
     }

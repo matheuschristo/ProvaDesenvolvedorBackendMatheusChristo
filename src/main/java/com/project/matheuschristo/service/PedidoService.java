@@ -44,12 +44,16 @@ public class PedidoService {
         return pedido;
     }
 
-    public PedidoSemItem createPedidoSemItem(PedidoSemItem psi) {
+    public PedidoSemItem createPedidoSemItem(PedidoSemItem psi) throws Exception {
         Pedido pedido = new Pedido();
 
         pedido.setTotal(psi.getTotal());
-        pedido.setDesconto(psi.getDesconto());
         pedido.setAberto(psi.isAberto());
+
+        if (pedido.isAberto())
+            pedido.setDesconto(psi.getDesconto());
+        else
+            throw new Exception("Não e possivel adicionar desconto a pedidos fechados.");
 
         return psi;
     }
@@ -73,7 +77,24 @@ public class PedidoService {
             for (Item item : pedido.getItens()) {
                 if (!item.getProdutoServico().isProduto()) throw new Exception("Não e possivel adicionar desconto a um serviço.");
             }
+
+            if (pedido.isAberto())
+                pedido.setDesconto(pci.getDesconto());
+            else
+                throw new Exception("Não e possivel adicionar desconto a pedidos fechados.");
+
             pedido.setDesconto(pci.getDesconto());
+            total = total - pedido.getDesconto().doubleValue();
+        }
+
+        pedido.setTotal(BigDecimal.valueOf(total));
+
+        repository.save(pedido);
+
+        // Salvar pedido nos itens
+        for (Item item : pedido.getItens()) {
+            item.setPedido(pedido);
+            itemRepository.save(item);
         }
 
         return pci;

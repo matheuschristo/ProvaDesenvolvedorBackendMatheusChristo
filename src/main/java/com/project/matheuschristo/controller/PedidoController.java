@@ -1,6 +1,7 @@
 package com.project.matheuschristo.controller;
 
 import com.project.matheuschristo.model.Pedido;
+import com.project.matheuschristo.model.PedidoComItem;
 import com.project.matheuschristo.model.PedidoSemItem;
 import com.project.matheuschristo.repository.PedidoRepository;
 import com.project.matheuschristo.service.PedidoService;
@@ -28,9 +29,14 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(pedido));
     }
 
-    @PostMapping("create_produto")
-    public ResponseEntity<PedidoSemItem> createPedidoSemItem(@RequestBody PedidoSemItem psi) {
+    @PostMapping("create_pedido_sem_itens")
+    public ResponseEntity<PedidoSemItem> createPedidoSemItem(@RequestBody PedidoSemItem psi) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoSemItem(psi));
+    }
+
+    @PostMapping("create_pedido")
+    public ResponseEntity<PedidoComItem> createPedidoComItem(@RequestBody PedidoComItem pci) throws Exception {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoComItem(pci));
     }
 
     @PutMapping("{id}")
