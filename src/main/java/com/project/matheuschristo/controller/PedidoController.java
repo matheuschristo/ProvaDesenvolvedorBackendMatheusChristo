@@ -1,13 +1,16 @@
 package com.project.matheuschristo.controller;
 
 import com.project.matheuschristo.model.Pedido;
+import com.project.matheuschristo.model.PedidoSemItem;
 import com.project.matheuschristo.repository.PedidoRepository;
 import com.project.matheuschristo.service.PedidoService;
+import org.apache.coyote.Response;
 import org.springframework.boot.rsocket.context.RSocketPortInfoApplicationContextInitializer;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +28,11 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(pedido));
     }
 
+    @PostMapping("create_produto")
+    public ResponseEntity<PedidoSemItem> createPedidoSemItem(@RequestBody PedidoSemItem psi) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoSemItem(psi));
+    }
+
     @PutMapping("{id}")
     public ResponseEntity<String> update(@PathVariable("id")UUID id, @RequestBody Pedido pedido) throws Exception {
         service.update(id, pedido);
@@ -35,5 +43,10 @@ public class PedidoController {
     public ResponseEntity<String> delete(@PathVariable("id") UUID id) throws Exception {
         service.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Pedido deletado com sucesso.");
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Pedido>> getPedidos() {
+        return ResponseEntity.status(HttpStatus.OK).body(service.getPedidos());
     }
 }

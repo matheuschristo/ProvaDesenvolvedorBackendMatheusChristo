@@ -1,47 +1,33 @@
 package com.project.matheuschristo.model;
 
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
-import java.util.UUID;
 
-@Entity
-@Table(name = "produto_servico")
-public class ProdutoServico {
+public class ItemProdutoServico {
 
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private int quantidade;
 
-    @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "preco", nullable = false)
     private BigDecimal preco;
 
-    @Column(name = "desativado")
     private boolean desativado;
 
-    @Column(name = "is_produto", nullable = false)
     private boolean isProduto;
 
-    public ProdutoServico(UUID id, String nome, BigDecimal preco, boolean desativado, boolean isProduto) {
-        this.id = id;
+    public ItemProdutoServico(int quantidade, String nome, BigDecimal preco, boolean desativado, boolean isProduto) {
+        this.quantidade = quantidade;
         this.nome = nome;
         this.preco = preco;
         this.desativado = desativado;
         this.isProduto = isProduto;
     }
 
-    public ProdutoServico(){}
-
-    public UUID getId() {
-        return id;
+    public int getQuantidade() {
+        return quantidade;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
     public String getNome() {

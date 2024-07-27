@@ -1,6 +1,7 @@
 package com.project.matheuschristo.controller;
 
 import com.project.matheuschristo.model.Item;
+import com.project.matheuschristo.model.ItemProdutoServico;
 import com.project.matheuschristo.service.ItemService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,6 +24,17 @@ public class ItemController {
     @PostMapping
     public ResponseEntity<Item> create(@RequestBody Item item) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createItem(item));
+    }
+
+    @PostMapping("create_item")
+    public ResponseEntity<ItemProdutoServico> createItemProdutoServico(@RequestBody ItemProdutoServico ipc) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.createItemProdutoServico(ipc));
+    }
+
+    @PutMapping("vincular/{pedido_id}")
+    public ResponseEntity<String> vincularItemPedido(@PathVariable("pedido_id") UUID pedidoId, @RequestBody UUID itemId) throws Exception {
+        service.vincularItemPedido(pedidoId, itemId);
+        return ResponseEntity.status(HttpStatus.OK).body("Item vinculado com sucesso ao pedido.");
     }
 
     @PutMapping("{id}")

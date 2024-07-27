@@ -1,21 +1,20 @@
 package com.project.matheuschristo.service;
 
-import com.project.matheuschristo.model.Item;
-import com.project.matheuschristo.model.Pedido;
-import com.project.matheuschristo.model.ProdutoServico;
+import com.project.matheuschristo.model.*;
 import com.project.matheuschristo.repository.ItemRepository;
 import com.project.matheuschristo.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class PedidoService {
 
-    private PedidoRepository repository;
-    private ItemRepository itemRepository;
+    private final PedidoRepository repository;
+    private final ItemRepository itemRepository;
 
     public PedidoService(PedidoRepository repository, ItemRepository itemRepository) {
         this.repository = repository;
@@ -24,7 +23,7 @@ public class PedidoService {
 
     public Pedido create(Pedido pedido) throws Exception {
 
-        if (pedido.getDesconto() != null) {
+        if (pedido.getDesconto() != null || pedido.getDesconto().doubleValue() > 0) {
             for (Item item : pedido.getItens()) {
                 if (!item.getProdutoServico().isProduto()) throw new Exception("Item cadastrado é um serviço!");
             }
@@ -43,6 +42,41 @@ public class PedidoService {
         repository.save(pedido);
 
         return pedido;
+    }
+
+    public PedidoSemItem createPedidoSemItem(PedidoSemItem psi) {
+        Pedido pedido = new Pedido();
+
+        pedido.setTotal(psi.getTotal());
+        pedido.setDesconto(psi.getDesconto());
+        pedido.setAberto(psi.isAberto());
+
+        return psi;
+    }
+
+    public PedidoComItem createPedidoComItem(PedidoComItem pci) throws Exception {
+        Pedido pedido = new Pedido();
+
+        pedido.setAberto(pci.isAberto());
+
+        double total = 0;
+        for (UUID id : pci.getItensId()) {
+            Item item = itemRepository.findItemById(id).orElseThrow(() -> new Exception("Item não encontrado."));
+
+            if (item.getProdutoServico().isDesativado()) throw new Exception("Produto/Serviço esta desativado.");
+
+            total += item.getProdutoServico().getPreco().doubleValue();
+            pedido.add(item);
+        }
+
+        if (pci.getDesconto() != null || pci.getDesconto().doubleValue() > 0) {
+            for (Item item : pedido.getItens()) {
+                if (!item.getProdutoServico().isProduto()) throw new Exception("Não e possivel adicionar desconto a um serviço.");
+            }
+            pedido.setDesconto(pci.getDesconto());
+        }
+
+        return pci;
     }
 
     public void update(UUID id, Pedido pedido) throws Exception {
@@ -69,5 +103,9 @@ public class PedidoService {
     public void delete(UUID id) throws Exception {
         Pedido pedido = repository.findPedidoById(id).orElseThrow(() -> new Exception("Pedido nao encontrado."));
         repository.delete(pedido);
+    }
+
+    public List<Pedido> getPedidos() {
+        return repository.getPedidos();
     }
 }

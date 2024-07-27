@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, UUID> {
 
-    Item findItemById(UUID id);
+    Optional<Item> findItemById(UUID id);
 
     @Query(value = """
                 SELECT DISTINCT(*) FROM item i

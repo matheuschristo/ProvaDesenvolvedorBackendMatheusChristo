@@ -3,6 +3,7 @@ package com.project.matheuschristo.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class Pedido {
     private boolean isAberto;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<Item> itens;
+    private List<Item> itens = new ArrayList<>();
 
     public Pedido(UUID id, BigDecimal total, BigDecimal desconto, boolean isAberto) {
         this.id = id;
@@ -33,6 +34,8 @@ public class Pedido {
         this.desconto = desconto;
         this.isAberto = isAberto;
     }
+
+    public Pedido() {}
 
     public void add(Item item) {
         itens.add(item);
