@@ -21,7 +21,7 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pedido> create(@RequestBody Pedido pedido) {
+    public ResponseEntity<Pedido> create(@RequestBody Pedido pedido) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(pedido));
     }
 }

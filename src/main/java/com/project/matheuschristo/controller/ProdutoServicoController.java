@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/produto_servico")
 public class ProdutoServicoController {
@@ -19,5 +21,17 @@ public class ProdutoServicoController {
     @PostMapping
     public ResponseEntity<ProdutoServico> create(@RequestBody ProdutoServico produtoServico) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(produtoServico));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<String> update(@PathVariable("id") UUID id, @RequestBody ProdutoServico produtoServico) {
+        service.update(id, produtoServico);
+        return ResponseEntity.status(HttpStatus.OK).body("Produto/Servico atualizado com sucesso.");
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") UUID id) throws Exception {
+        service.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body("Produto/Serviço excluido com sucesso!");
     }
 }

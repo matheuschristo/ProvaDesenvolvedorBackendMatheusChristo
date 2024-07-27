@@ -23,8 +23,7 @@ public class PedidoService {
     public Pedido create(Pedido pedido) throws Exception {
 
         if (pedido.getDesconto() != null || pedido.getDesconto().doubleValue() > 0) {
-            for (UUID itemId : pedido.getItens()) {
-                Item item = itemRepository.findItemById(itemId);
+            for (Item item : pedido.getItens()) {
                 if (!item.getProdutoServico().isProduto()) throw new Exception("Item cadastrado é um serviço!");
             }
             if (!pedido.isAberto()) throw new Exception("O produto está fechado.");

@@ -25,7 +25,7 @@ public class Pedido {
     private boolean isAberto;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<UUID> itens;
+    private List<Item> itens;
 
     public Pedido(UUID id, BigDecimal total, BigDecimal desconto, boolean isAberto) {
         this.id = id;
@@ -66,7 +66,7 @@ public class Pedido {
         isAberto = aberto;
     }
 
-    public List<UUID> getItens() {
+    public List<Item> getItens() {
         return itens;
     }
 }
