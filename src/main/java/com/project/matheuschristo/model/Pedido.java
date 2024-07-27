@@ -34,6 +34,10 @@ public class Pedido {
         this.isAberto = isAberto;
     }
 
+    public void add(Item item) {
+        itens.add(item);
+    }
+
     public UUID getId() {
         return id;
     }

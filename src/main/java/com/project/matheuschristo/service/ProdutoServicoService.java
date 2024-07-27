@@ -39,7 +39,7 @@ public class ProdutoServicoService {
     public void delete(UUID id) throws Exception {
         ProdutoServico produtoServico = repository.findProdutoServicoById(id);
 
-        if (itemRepository.findItemComPedidoByProdudoServicoId(id).orElse(null) != null)
+        if (itemRepository.buscarItemComPedidoByProdudoServicoId(id).orElse(null) != null)
             throw new Exception("Produto/Servico não pode ser excluido pois existe vinculo a um pedido.");
 
         repository.delete(produtoServico);
