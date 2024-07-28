@@ -21,15 +21,10 @@ public class ItemController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<Item> create(@RequestBody Item item) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createItem(item));
-    }
-
     @PostMapping("vincular/{pedido_id}/{produto_servico_id}/{quantidade}")
     public ResponseEntity<String> vincularItemPedido(@PathVariable("pedido_id") UUID pedidoId, @PathVariable("produto_servico_id") UUID produtoServicoId, @PathVariable("quantidade") int quantidade) throws Exception {
         service.vincularItemPedido(pedidoId, produtoServicoId, quantidade);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Item vinculado com sucesso ao pedido.");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Item vinculado ao pedido com sucesso.");
     }
 
     @PutMapping("{id}")

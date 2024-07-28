@@ -7,6 +7,7 @@ import com.project.matheuschristo.model.ProdutoServico;
 import com.project.matheuschristo.repository.ItemRepository;
 import com.project.matheuschristo.repository.PedidoRepository;
 import com.project.matheuschristo.repository.ProdutoServicoRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -38,11 +39,16 @@ public class ItemService {
 
         if (produtoServico.isDesativado()) throw new Exception("Produto/Serviço esta desativado.");
 
+        if (!produtoServico.isProduto() && pedido.getDesconto().doubleValue() > 0) throw new Exception("Não e possivel adionar um Serviço a um pedido com desconto.");
+
         Item item = new Item();
         item.setProdutoServico(produtoServico);
         item.setQuantidade(quantidade);
 
-        pedido.setTotal(BigDecimal.valueOf(pedido.getTotal().doubleValue() + item.getProdutoServico().getPreco().toBigInteger().doubleValue()));
+        if (pedido.getTotal() != null)
+            pedido.setTotal(BigDecimal.valueOf(pedido.getTotal().doubleValue() + item.getProdutoServico().getPreco().toBigInteger().doubleValue()));
+        else
+            pedido.setTotal(BigDecimal.valueOf(item.getProdutoServico().getPreco().toBigInteger().doubleValue() - pedido.getDesconto().doubleValue()));
 
         item.setPedido(pedido);
 
@@ -60,9 +66,10 @@ public class ItemService {
     public void delete(UUID id) throws Exception {
         Item item = repository.findItemById(id).orElseThrow(() -> new Exception("Item não encontrado."));
 
-        if (item.getPedido() != null) throw new Exception("Item vinculado a um pedido.");
+        item.setPedido(null);
         item.setProdutoServico(null);
 
+        repository.save(item);
         repository.delete(item);
     }
 
