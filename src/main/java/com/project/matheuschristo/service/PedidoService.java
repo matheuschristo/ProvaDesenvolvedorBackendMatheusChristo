@@ -23,29 +23,6 @@ public class PedidoService {
         this.itemRepository = itemRepository;
     }
 
-    public Pedido create(Pedido pedido) throws Exception {
-
-        if (pedido.getDesconto() != null || pedido.getDesconto().doubleValue() > 0) {
-            for (Item item : pedido.getItens()) {
-                if (!item.getProdutoServico().isProduto()) throw new Exception("Item cadastrado é um serviço!");
-            }
-            if (!pedido.isAberto()) throw new Exception("O produto está fechado.");
-        }
-
-        double total = 0;
-        for (Item item : pedido.getItens()) {
-            total += item.getProdutoServico().getPreco().doubleValue();
-        }
-
-        total = total - pedido.getDesconto().doubleValue();
-
-        pedido.setTotal(BigDecimal.valueOf(total));
-
-        repository.save(pedido);
-
-        return pedido;
-    }
-
     public PedidoSemItem createPedidoSemItem(PedidoSemItem psi) throws Exception {
         Pedido pedido = new Pedido();
 
@@ -67,31 +44,32 @@ public class PedidoService {
 
         pedido.setAberto(pci.isAberto());
 
-        double total = 0;
+        double totalProdutos = 0;
+        double totalServicos = 0;
         for (UUID id : pci.getItensId()) {
             Item item = itemRepository.findItemById(id).orElseThrow(() -> new Exception("Item não encontrado."));
 
             if (item.getProdutoServico().isDesativado()) throw new Exception("Produto/Serviço esta desativado.");
 
-            total += item.getProdutoServico().getPreco().doubleValue();
+            if (item.getProdutoServico().isProduto())
+                totalProdutos += item.getProdutoServico().getPreco().doubleValue();
+            else
+                totalServicos += item.getProdutoServico().getPreco().doubleValue();
+
             pedido.add(item);
         }
 
         if (pci.getDesconto() != null || pci.getDesconto().doubleValue() > 0) {
-            for (Item item : pedido.getItens()) {
-                if (!item.getProdutoServico().isProduto()) throw new Exception("Não e possivel adicionar desconto a um serviço.");
-            }
-
-            if (pedido.isAberto())
+           if (pedido.isAberto())
                 pedido.setDesconto(pci.getDesconto());
             else
                 throw new Exception("Não e possivel adicionar desconto a pedidos fechados.");
 
             pedido.setDesconto(pci.getDesconto());
-            total = total - pedido.getDesconto().doubleValue();
+            totalProdutos = totalProdutos - pedido.getDesconto().doubleValue();
         }
 
-        pedido.setTotal(BigDecimal.valueOf(total));
+        pedido.setTotal(BigDecimal.valueOf(totalProdutos + totalServicos));
 
         repository.save(pedido);
 
@@ -108,21 +86,21 @@ public class PedidoService {
         Pedido newPedido = repository.findPedidoById(id).orElseThrow(() -> new Exception("Pedido nao encontrado."));
 
         newPedido.setAberto(pedido.isAberto());
-        if (pedido.getDesconto() != null) {
-            for (Item item : newPedido.getItens()) {
-                if (!item.getProdutoServico().isProduto()) throw new Exception("Item cadastrado é um serviço!");
-            }
-            if (!pedido.isAberto()) throw new Exception("O produto está fechado.");
-            newPedido.setDesconto(pedido.getDesconto());
-        }
-        double total = 0;
+        if (pedido.getDesconto() != null && !pedido.isAberto()) throw new Exception("O pedido está fechado.");
+
+        double totalProdutos = 0;
+        double totalServicos = 0;
         for (Item item : newPedido.getItens()) {
-            total += item.getProdutoServico().getPreco().doubleValue();
+            if (item.getProdutoServico().isProduto())
+                totalProdutos += item.getProdutoServico().getPreco().doubleValue();
+            else
+                totalServicos += item.getProdutoServico().getPreco().doubleValue();
+
         }
 
-        if (total > 0) total = total - newPedido.getDesconto().doubleValue();
+        if (totalProdutos > 0) totalProdutos = totalProdutos - newPedido.getDesconto().doubleValue();
 
-        newPedido.setTotal(BigDecimal.valueOf(total));
+        newPedido.setTotal(BigDecimal.valueOf(totalProdutos + totalServicos));
 
         repository.save(newPedido);
     }

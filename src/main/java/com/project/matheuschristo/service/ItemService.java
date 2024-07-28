@@ -39,16 +39,16 @@ public class ItemService {
 
         if (produtoServico.isDesativado()) throw new Exception("Produto/Serviço esta desativado.");
 
-        if (!produtoServico.isProduto() && pedido.getDesconto().doubleValue() > 0) throw new Exception("Não e possivel adionar um Serviço a um pedido com desconto.");
-
         Item item = new Item();
         item.setProdutoServico(produtoServico);
         item.setQuantidade(quantidade);
 
         if (pedido.getTotal() != null)
             pedido.setTotal(BigDecimal.valueOf(pedido.getTotal().doubleValue() + item.getProdutoServico().getPreco().toBigInteger().doubleValue()));
-        else
+        else if (item.getProdutoServico().isProduto())
             pedido.setTotal(BigDecimal.valueOf(item.getProdutoServico().getPreco().toBigInteger().doubleValue() - pedido.getDesconto().doubleValue()));
+        else
+            pedido.setTotal(BigDecimal.valueOf(item.getProdutoServico().getPreco().toBigInteger().doubleValue()));
 
         item.setPedido(pedido);
 
