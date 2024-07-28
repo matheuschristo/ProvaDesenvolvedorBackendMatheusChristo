@@ -29,11 +29,6 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoSemItem(psi));
     }
 
-    @PostMapping("create_pedido_com_itens")
-    public ResponseEntity<PedidoComItem> createPedidoComItem(@RequestBody PedidoComItem pci) throws Exception {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoComItem(pci));
-    }
-
     @PutMapping("{id}")
     public ResponseEntity<String> update(@PathVariable("id")UUID id, @RequestBody PedidoSemItem pedido) throws Exception {
         service.update(id, pedido);
@@ -46,7 +41,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.OK).body("Pedido deletado com sucesso.");
     }
 
-    @GetMapping("pedidos")
+    @GetMapping("buscar")
     public ResponseEntity<?> buscarPedidos(
             @RequestParam(name = "page_size", required = false) Integer pageSize,
             @RequestParam(name = "page_index", required = false) Integer pageIndex
