@@ -55,4 +55,12 @@ public class PedidoController {
     public ResponseEntity<List<Pedido>> getPedidos() {
         return ResponseEntity.status(HttpStatus.OK).body(service.getPedidos());
     }
+
+    @GetMapping("pedidos")
+    public ResponseEntity<?> buscarPedidos(
+            @RequestParam(name = "page_size", defaultValue = "10", required = false) Integer pageSize,
+            @RequestParam(name = "page_index", defaultValue = "0", required = false) Integer pageIndex
+    ) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarPedidos(pageSize, pageIndex));
+    }
 }

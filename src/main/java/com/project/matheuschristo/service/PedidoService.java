@@ -4,6 +4,7 @@ import com.project.matheuschristo.model.*;
 import com.project.matheuschristo.repository.ItemRepository;
 import com.project.matheuschristo.repository.PedidoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -128,5 +129,14 @@ public class PedidoService {
 
     public List<Pedido> getPedidos() {
         return repository.getPedidos();
+    }
+
+    public Object buscarPedidos(Integer pageSize, Integer pageIndex) throws Exception {
+        try {
+            Integer firstResult = pageSize * pageIndex;
+            return repository.buscarPedidos(pageSize, firstResult);
+        } catch (Exception ie) {
+            throw new Exception(ie);
+        }
     }
 }
