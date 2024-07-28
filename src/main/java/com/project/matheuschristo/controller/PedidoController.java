@@ -40,7 +40,7 @@ public class PedidoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<String> update(@PathVariable("id")UUID id, @RequestBody Pedido pedido) throws Exception {
+    public ResponseEntity<String> update(@PathVariable("id")UUID id, @RequestBody PedidoSemItem pedido) throws Exception {
         service.update(id, pedido);
         return ResponseEntity.status(HttpStatus.OK).body("Pedido atualizado com sucesso.");
     }
@@ -49,11 +49,6 @@ public class PedidoController {
     public ResponseEntity<String> delete(@PathVariable("id") UUID id) throws Exception {
         service.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Pedido deletado com sucesso.");
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Pedido>> getPedidos() {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getPedidos());
     }
 
     @GetMapping("pedidos")

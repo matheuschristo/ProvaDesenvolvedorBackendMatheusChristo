@@ -27,5 +27,5 @@ public interface PedidoRepository extends JpaRepository<Pedido, UUID> {
                 LIMIT :pageSize
                 OFFSET :firstResult
             """, nativeQuery = true)
-    Object buscarPedidos(@Param("pageSize") Integer pageSize, @Param("firstResult") Integer fistResult);
+    Optional<Pedido> buscarPedidos(@Param("pageSize") Integer pageSize, @Param("firstResult") Integer fistResult);
 }

@@ -57,6 +57,8 @@ public class PedidoService {
         else
             throw new Exception("Não e possivel adicionar desconto a pedidos fechados.");
 
+        repository.save(pedido);
+
         return psi;
     }
 
@@ -102,29 +104,34 @@ public class PedidoService {
         return pci;
     }
 
-    public void update(UUID id, Pedido pedido) throws Exception {
+    public void update(UUID id, PedidoSemItem pedido) throws Exception {
         Pedido newPedido = repository.findPedidoById(id).orElseThrow(() -> new Exception("Pedido nao encontrado."));
 
         newPedido.setAberto(pedido.isAberto());
         if (pedido.getDesconto() != null) {
-            for (Item item : pedido.getItens()) {
+            for (Item item : newPedido.getItens()) {
                 if (!item.getProdutoServico().isProduto()) throw new Exception("Item cadastrado é um serviço!");
             }
             if (!pedido.isAberto()) throw new Exception("O produto está fechado.");
             newPedido.setDesconto(pedido.getDesconto());
         }
         double total = 0;
-        for (Item item : pedido.getItens()) {
-            newPedido.add(item);
+        for (Item item : newPedido.getItens()) {
             total += item.getProdutoServico().getPreco().doubleValue();
         }
-        total = total - newPedido.getDesconto().doubleValue();
+
+        if (total > 0) total = total - newPedido.getDesconto().doubleValue();
 
         newPedido.setTotal(BigDecimal.valueOf(total));
+
+        repository.save(newPedido);
     }
 
     public void delete(UUID id) throws Exception {
         Pedido pedido = repository.findPedidoById(id).orElseThrow(() -> new Exception("Pedido nao encontrado."));
+
+        if (!pedido.getItens().isEmpty()) throw new Exception("Pedido contem itens!");
+
         repository.delete(pedido);
     }
 
@@ -132,13 +139,9 @@ public class PedidoService {
         return repository.getPedidos();
     }
 
-    public Object buscarPedidos(Integer pageSize, Integer pageIndex) throws Exception {
-        try {
-            Integer firstResult = pageSize * pageIndex;
-            return repository.buscarPedidos(pageSize, firstResult);
-        } catch (Exception ie) {
-            throw new Exception(ie);
-        }
+    public Pedido buscarPedidos(Integer pageSize, Integer pageIndex) throws Exception {
+        Integer firstResult = pageSize * pageIndex;
+        return repository.buscarPedidos(pageSize, firstResult).orElseThrow(() -> new Exception("Pedido nao encontrado."));
     }
 
     public List<ItemProdutoServico> buscarItensPedido(UUID pedidoId, Integer pageSize, Integer pageIndex) throws Exception {
