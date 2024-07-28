@@ -26,15 +26,10 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createItem(item));
     }
 
-    @PostMapping("create_item")
-    public ResponseEntity<ItemProdutoServico> createItemProdutoServico(@RequestBody ItemProdutoServico ipc) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.createItemProdutoServico(ipc));
-    }
-
-    @PutMapping("vincular/{pedido_id}")
-    public ResponseEntity<String> vincularItemPedido(@PathVariable("pedido_id") UUID pedidoId, @RequestBody UUID itemId) throws Exception {
-        service.vincularItemPedido(pedidoId, itemId);
-        return ResponseEntity.status(HttpStatus.OK).body("Item vinculado com sucesso ao pedido.");
+    @PostMapping("vincular/{pedido_id}/{produto_servico_id}/{quantidade}")
+    public ResponseEntity<String> vincularItemPedido(@PathVariable("pedido_id") UUID pedidoId, @PathVariable("produto_servico_id") UUID produtoServicoId, @PathVariable("quantidade") int quantidade) throws Exception {
+        service.vincularItemPedido(pedidoId, produtoServicoId, quantidade);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Item vinculado com sucesso ao pedido.");
     }
 
     @PutMapping("{id}")
@@ -49,8 +44,4 @@ public class ItemController {
         return ResponseEntity.status(HttpStatus.OK).body("Item deletado com sucesso.");
     }
 
-    @GetMapping
-    public ResponseEntity<List<Item>> getItens() {
-        return ResponseEntity.status(HttpStatus.OK).body(service.getItens());
-    }
 }

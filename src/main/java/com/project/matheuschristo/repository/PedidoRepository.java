@@ -18,12 +18,12 @@ public interface PedidoRepository extends JpaRepository<Pedido, UUID> {
     Optional<Pedido> findPedidoById(UUID id);
 
     @Query(value = """
-                SELECT * FROM pedidos p
+                SELECT * FROM pedido p
           """, nativeQuery = true)
     List<Pedido> getPedidos();
 
     @Query(value = """
-                SELECT * FROM pedidos p
+                SELECT * FROM pedido p
                 LIMIT :pageSize
                 OFFSET :firstResult
             """, nativeQuery = true)

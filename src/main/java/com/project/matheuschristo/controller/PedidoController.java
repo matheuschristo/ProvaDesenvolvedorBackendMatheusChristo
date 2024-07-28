@@ -34,7 +34,7 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoSemItem(psi));
     }
 
-    @PostMapping("create_pedido")
+    @PostMapping("create_pedido_com_itens")
     public ResponseEntity<PedidoComItem> createPedidoComItem(@RequestBody PedidoComItem pci) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.createPedidoComItem(pci));
     }
@@ -58,9 +58,18 @@ public class PedidoController {
 
     @GetMapping("pedidos")
     public ResponseEntity<?> buscarPedidos(
-            @RequestParam(name = "page_size", defaultValue = "10", required = false) Integer pageSize,
-            @RequestParam(name = "page_index", defaultValue = "0", required = false) Integer pageIndex
+            @RequestParam(name = "page_size", required = false) Integer pageSize,
+            @RequestParam(name = "page_index", required = false) Integer pageIndex
     ) throws Exception {
         return ResponseEntity.status(HttpStatus.OK).body(service.buscarPedidos(pageSize, pageIndex));
+    }
+
+    @GetMapping("item_pedido/{pedidoId}")
+    public ResponseEntity<?> buscarItensPedidos(
+            @RequestParam(name = "page_size", required = false) Integer pageSize,
+            @RequestParam(name = "page_index", required = false) Integer pageIndex,
+            @PathVariable("pedidoId") UUID pedidoId
+    ) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarItensPedido(pedidoId, pageSize, pageIndex));
     }
 }

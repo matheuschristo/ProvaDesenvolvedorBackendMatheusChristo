@@ -9,6 +9,7 @@ import com.project.matheuschristo.repository.PedidoRepository;
 import com.project.matheuschristo.repository.ProdutoServicoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,27 +32,17 @@ public class ItemService {
         return item;
     }
 
-    public ItemProdutoServico createItemProdutoServico(ItemProdutoServico ipc) {
+    public void vincularItemPedido(UUID pedidoId, UUID produtoServicoId, int quantidade) throws Exception {
+        Pedido pedido = pedidoRepository.findPedidoById(pedidoId).orElseThrow(() -> new Exception("Pedido não encontrado."));
+        ProdutoServico produtoServico = produtoServicoRepository.findProdutoServicoById(produtoServicoId).orElseThrow(() -> new Exception("Produto/Servico não encontrado."));
 
-        ProdutoServico produtoServico = new ProdutoServico();
-        produtoServico.setNome(ipc.getNome());
-        produtoServico.setPreco(ipc.getPreco());
-        produtoServico.setDesativado(ipc.isDesativado());
-        produtoServico.setProduto(ipc.isProduto());
-        produtoServicoRepository.save(produtoServico);
+        if (produtoServico.isDesativado()) throw new Exception("Produto/Serviço esta desativado.");
 
         Item item = new Item();
         item.setProdutoServico(produtoServico);
-        item.setQuantidade(ipc.getQuantidade());
-        repository.save(item);
+        item.setQuantidade(quantidade);
 
-        return ipc;
-    }
-
-    public void vincularItemPedido(UUID pedidoId, UUID itemId) throws Exception {
-        Pedido pedido = pedidoRepository.findPedidoById(pedidoId).orElseThrow(() -> new Exception("Pedido não encontrado."));
-
-        Item item = repository.findItemById(itemId).orElseThrow(() -> new Exception("Item não encontrado."));
+        pedido.setTotal(BigDecimal.valueOf(pedido.getTotal().doubleValue() + item.getProdutoServico().getPreco().toBigInteger().doubleValue()));
 
         item.setPedido(pedido);
 
@@ -67,7 +58,11 @@ public class ItemService {
     }
 
     public void delete(UUID id) throws Exception {
-        Item item = repository.findItemById(id).orElseThrow(() -> new Exception("Item não encontrado."));;
+        Item item = repository.findItemById(id).orElseThrow(() -> new Exception("Item não encontrado."));
+
+        if (item.getPedido() != null) throw new Exception("Item vinculado a um pedido.");
+        item.setProdutoServico(null);
+
         repository.delete(item);
     }
 

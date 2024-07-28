@@ -24,7 +24,7 @@ public class ProdutoServicoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<String> update(@PathVariable("id") UUID id, @RequestBody ProdutoServico produtoServico) {
+    public ResponseEntity<String> update(@PathVariable("id") UUID id, @RequestBody ProdutoServico produtoServico) throws Exception {
         service.update(id, produtoServico);
         return ResponseEntity.status(HttpStatus.OK).body("Produto/Servico atualizado com sucesso.");
     }
@@ -33,5 +33,13 @@ public class ProdutoServicoController {
     public ResponseEntity<String> delete(@PathVariable("id") UUID id) throws Exception {
         service.delete(id);
         return ResponseEntity.status(HttpStatus.OK).body("Produto/Serviço excluido com sucesso!");
+    }
+
+    @GetMapping("buscar")
+    public ResponseEntity<?> buscarProdutosServicos(
+            @RequestParam(name = "page_size", required = false) Integer pageSize,
+            @RequestParam(name = "page_index", required = false) Integer pageIndex
+    ) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(service.buscarProdutoServico(pageSize, pageIndex));
     }
 }

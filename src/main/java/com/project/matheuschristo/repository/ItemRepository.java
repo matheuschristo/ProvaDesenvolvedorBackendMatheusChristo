@@ -1,6 +1,7 @@
 package com.project.matheuschristo.repository;
 
 import com.project.matheuschristo.model.Item;
+import com.project.matheuschristo.model.ItemProdutoServico;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,9 +17,10 @@ public interface ItemRepository extends JpaRepository<Item, UUID> {
     Optional<Item> findItemById(UUID id);
 
     @Query(value = """
-                SELECT DISTINCT(*) FROM item i
-                WHERE i.produto_servico = :id
-                AND i.produto_id IS NOT NULL
+                SELECT * FROM item i
+                WHERE i.produto_servico_id = :id
+                AND i.pedido_id IS NOT NULL
+                LIMIT 1
             """, nativeQuery = true)
     Optional<Item> buscarItemComPedidoByProdudoServicoId(@Param("id") UUID id);
 
@@ -26,4 +28,12 @@ public interface ItemRepository extends JpaRepository<Item, UUID> {
                 SELECT * FROM item i
             """, nativeQuery = true)
     List<Item> getItens();
+
+    @Query(value = """
+                SELECT * FROM item i
+                WHERE i.pedido_id = :pedidoId
+                LIMIT :pageSize
+                OFFSET :firstResult
+            """, nativeQuery = true)
+    Optional<List<Item>> findItemByPedidoId(@Param("pedidoId") UUID pedidoId, @Param("pageSize") Integer pageSize, @Param("firstResult") Integer fistResult);
 }

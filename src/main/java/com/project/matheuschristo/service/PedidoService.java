@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -138,5 +139,18 @@ public class PedidoService {
         } catch (Exception ie) {
             throw new Exception(ie);
         }
+    }
+
+    public List<ItemProdutoServico> buscarItensPedido(UUID pedidoId, Integer pageSize, Integer pageIndex) throws Exception {
+
+        Integer firstResult = pageSize * pageIndex;
+        List<Item> itens = itemRepository.findItemByPedidoId(pedidoId, pageSize, firstResult).orElseThrow(() -> new Exception("Não foram encontrados itens."));
+
+        List<ItemProdutoServico> itemProdutoServicos = new ArrayList<>();
+        for (Item item : itens) {
+            itemProdutoServicos.add(item.toItemProdutoServico(item));
+        }
+
+        return itemProdutoServicos;
     }
 }

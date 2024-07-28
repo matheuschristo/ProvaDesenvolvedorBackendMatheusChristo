@@ -22,6 +22,8 @@ public class ItemProdutoServico {
         this.isProduto = isProduto;
     }
 
+    public ItemProdutoServico() {}
+
     public int getQuantidade() {
         return quantidade;
     }

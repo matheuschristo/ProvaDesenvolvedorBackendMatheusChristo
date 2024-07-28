@@ -31,6 +31,21 @@ public class Item {
         this.quantidade = quantidade;
     }
 
+    public ItemProdutoServico toItemProdutoServico(Item item) throws Exception {
+        try {
+            ItemProdutoServico itemProdutoServico = new ItemProdutoServico();
+            itemProdutoServico.setProduto(item.getProdutoServico().isProduto());
+            itemProdutoServico.setNome(item.getProdutoServico().getNome());
+            itemProdutoServico.setDesativado(item.getProdutoServico().isDesativado());
+            itemProdutoServico.setPreco(item.getProdutoServico().getPreco());
+            itemProdutoServico.setQuantidade(item.getQuantidade());
+
+            return itemProdutoServico;
+        } catch (Exception ex) {
+            throw new Exception(ex.getMessage());
+        }
+    }
+
     public Item() {}
 
     public UUID getId() {

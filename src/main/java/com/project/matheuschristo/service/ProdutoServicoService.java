@@ -4,8 +4,10 @@ import com.project.matheuschristo.model.Item;
 import com.project.matheuschristo.model.ProdutoServico;
 import com.project.matheuschristo.repository.ItemRepository;
 import com.project.matheuschristo.repository.ProdutoServicoRepository;
+import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -24,8 +26,8 @@ public class ProdutoServicoService {
         return produtoServico;
     }
 
-    public void update(UUID id, ProdutoServico produtoServico) {
-        ProdutoServico newProdutoServico = repository.findProdutoServicoById(id);
+    public void update(UUID id, ProdutoServico produtoServico) throws Exception {
+        ProdutoServico newProdutoServico = repository.findProdutoServicoById(id).orElseThrow(() -> new Exception("Produto/Servico não encontrado."));;
 
         if (produtoServico.getNome() != null) newProdutoServico.setNome(produtoServico.getNome());
         if (produtoServico.getPreco() != null) newProdutoServico.setPreco(produtoServico.getPreco());
@@ -37,11 +39,16 @@ public class ProdutoServicoService {
     }
 
     public void delete(UUID id) throws Exception {
-        ProdutoServico produtoServico = repository.findProdutoServicoById(id);
+        ProdutoServico produtoServico = repository.findProdutoServicoById(id).orElseThrow(() -> new Exception("Produto/Servico não encontrado."));;
 
+        System.out.println("debug - "+ itemRepository.buscarItemComPedidoByProdudoServicoId(id).orElse(null));
         if (itemRepository.buscarItemComPedidoByProdudoServicoId(id).orElse(null) != null)
             throw new Exception("Produto/Servico não pode ser excluido pois existe vinculo a um pedido.");
 
         repository.delete(produtoServico);
+    }
+
+    public List<ProdutoServico> buscarProdutoServico(Integer pageSize, Integer pageIndex) throws Exception {
+        return repository.buscarProdutoServicos(pageSize, (pageSize * pageIndex)).orElseThrow(() -> new Exception("Erro na busca de produtos/serviços."));
     }
 }
